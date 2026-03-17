@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hormuz Minesweeper</title>
+  <style>
+    :root {
+      --chrome: #c0c0c0;
+      --chrome-light: #ffffff;
+      --chrome-mid: #dfdfdf;
+      --chrome-dark: #808080;
+      --chrome-deep: #404040;
+      --digit-red: #ff2a2a;
+      --digit-bg: #160000;
+      --panel-shadow:
+        inset 2px 2px 0 var(--chrome-light),
+        inset -2px -2px 0 var(--chrome-dark),
+        inset 1px 1px 0 var(--chrome-mid),
+        inset -1px -1px 0 #000000;
+      --panel-inset:
+        inset 2px 2px 0 var(--chrome-dark),
+        inset -2px -2px 0 var(--chrome-light),
+        inset 1px 1px 0 var(--chrome-deep),
+        inset -1px -1px 0 var(--chrome-mid);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.14), transparent 24%),
+        linear-gradient(180deg, #008080 0%, #0d7575 58%, #0b5f5f 100%);
+      color: #111111;
+      font-family: Tahoma, "MS Sans Serif", sans-serif;
+    }
+
+    .window {
+      width: min(96vw, 1140px);
+      background: var(--chrome);
+      box-shadow: var(--panel-shadow), 0 28px 52px rgba(0, 0, 0, 0.28);
+    }
+
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 8px;
+      background: linear-gradient(90deg, #0a2a97 0%, #2e7dd7 100%);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .titlebar-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .titlebar-actions span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      background: var(--chrome);
+      color: #111111;
+      font-size: 11px;
+      box-shadow: var(--panel-shadow);
+    }
+
+    .shell {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hud,
+    .map-frame {
+      background: var(--chrome);
+      box-shadow: var(--panel-inset);
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: 112px 72px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .counter {
+      min-height: 64px;
+      padding: 10px 10px 6px;
+      background: var(--digit-bg);
+      color: var(--digit-red);
+      box-shadow: var(--panel-inset);
+      font-family: "Courier New", monospace;
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      text-align: center;
+      user-select: none;
+    }
+
+    .reset {
+      width: 64px;
+      height: 64px;
+      padding: 0;
+      border: 0;
+      background: var(--chrome);
+      box-shadow: var(--panel-shadow);
+      cursor: pointer;
+    }
+
+    .reset:active {
+      box-shadow: var(--panel-inset);
+    }
+
+    .reset svg {
+      width: 72%;
+      height: 72%;
+      display: block;
+      margin: auto;
+    }
+
+    .status-panel {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+      align-content: center;
+    }
+
+    .status-text {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: #1a1a1a;
+    }
+
+    .status-note {
+      font-size: 13px;
+      color: #2c2c2c;
+    }
+
+    .map-frame {
+      padding: 8px;
+    }
+
+    .map-panel {
+      position: relative;
+      aspect-ratio: 12643 / 10050;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.04)),
+        url("map.svg") center / 100% 100% no-repeat;
+      box-shadow: inset 1px 1px 0 var(--chrome-dark), inset -1px -1px 0 var(--chrome-light);
+    }
+
+    .board {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: grid;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .cell {
+      appearance: none;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      min-width: 0;
+      min-height: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      font: 700 clamp(12px, 1.2vw, 22px) / 1 Tahoma, "MS Sans Serif", sans-serif;
+      cursor: default;
+    }
+
+    .cell.blocked {
+      pointer-events: none;
+    }
+
+    .cell.playable.hidden {
+      background: rgba(192, 192, 192, 0.94);
+      box-shadow: var(--panel-shadow);
+      cursor: pointer;
+    }
+
+    .cell.playable.hidden:hover {
+      filter: brightness(1.04);
+    }
+
+    .cell.playable.hidden:active {
+      box-shadow: var(--panel-inset);
+      background: rgba(176, 176, 176, 0.96);
+    }
+
+    .cell.playable.revealed {
+      background: rgba(192, 192, 192, 0.38);
+      box-shadow: inset 1px 1px 0 rgba(110, 110, 110, 0.95);
+    }
+
+    .cell.playable.revealed.exploded {
+      background: rgba(211, 30, 30, 0.82);
+    }
+
+    .cell svg {
+      width: 70%;
+      height: 70%;
+      display: block;
+      pointer-events: none;
+    }
+
+    .digit {
+      display: inline-block;
+      transform: translateY(1px);
+    }
+
+    .digit-1 { color: #0000ff; }
+    .digit-2 { color: #007b00; }
+    .digit-3 { color: #ff0000; }
+    .digit-4 { color: #00007b; }
+    .digit-5 { color: #7b0000; }
+    .digit-6 { color: #007b7b; }
+    .digit-7 { color: #000000; }
+    .digit-8 { color: #7b7b7b; }
+
+    @media (max-width: 880px) {
+      body {
+        padding: 16px;
+      }
+
+      .hud {
+        grid-template-columns: 1fr auto;
+      }
+
+      .status-panel {
+        grid-column: 1 / -1;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .status-text {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .titlebar {
+        font-size: 13px;
+      }
+
+      .shell {
+        padding: 10px;
+      }
+
+      .hud {
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .counter {
+        min-height: 56px;
+        font-size: 32px;
+      }
+
+      .reset {
+        width: 56px;
+        height: 56px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="window">
+    <div class="titlebar">
+      <span>Hormuz Minesweeper</span>
+      <div class="titlebar-actions" aria-hidden="true">
+        <span>&minus;</span>
+        <span>&#9633;</span>
+        <span>&times;</span>
+      </div>
+    </div>
+
+    <div class="shell">
+      <section class="hud" aria-label="Game status">
+        <div class="counter" id="mine-counter">000</div>
+        <button class="reset" id="reset-button" type="button" aria-label="Reset game"></button>
+        <div class="status-panel">
+          <div class="status-text" id="status-text">READY to start winning!!!</div>
+          <div class="status-note">Left-click reveal. Right-click flag. Mines only spawn on water.</div>
+        </div>
+      </section>
+
+      <section class="map-frame">
+        <div class="map-panel">
+          <div class="board" id="board" aria-label="Minesweeper board"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="index.js"></script>
+</body>
+</html>
