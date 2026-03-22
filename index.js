@@ -32,6 +32,10 @@ const mineCounterElement = document.getElementById("mine-counter");
 const statusElement = document.getElementById("status-text");
 const statusNoteElement = document.getElementById("status-note");
 const resetButton = document.getElementById("reset-button");
+const videoModal = document.getElementById("video-modal");
+const videoModalTitle = document.getElementById("video-modal-title");
+const videoFrame = document.getElementById("video-frame");
+const videoModalClose = document.getElementById("video-modal-close");
 
 const FLAG_ICON = `
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -293,10 +297,23 @@ function revealAllMines() {
   }
 }
 
+function showVideoModal(title) {
+  videoModalTitle.textContent = title;
+  videoFrame.src = "https://www.youtube.com/embed/MJMSJM-h6b4?autoplay=1";
+  videoModal.hidden = false;
+}
+
+function hideVideoModal() {
+  videoModal.hidden = true;
+  videoFrame.src = "";
+  resetGame();
+}
+
 function finishLost() {
   gameState = "lost";
   revealAllMines();
   setFace("lost");
+  setTimeout(() => showVideoModal("BOOM"), 200);
 }
 
 function finishWon() {
@@ -311,6 +328,8 @@ function finishWon() {
       cell.flagged = true;
     }
   }
+
+  setTimeout(() => showVideoModal("YOU WIN"), 200);
 }
 
 function revealCell(index) {
@@ -574,6 +593,7 @@ resetButton.addEventListener("click", () => {
   advanceBrowserTitle();
   resetGame();
 });
+videoModalClose.addEventListener("click", hideVideoModal);
 
 buildBoard();
 setBrowserTitle(titleIndex);

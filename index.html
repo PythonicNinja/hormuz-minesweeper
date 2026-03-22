@@ -293,6 +293,58 @@
       box-shadow: var(--panel-inset);
     }
 
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .video-modal[hidden] {
+      display: none;
+    }
+
+    .video-modal-content {
+      background: var(--chrome);
+      box-shadow: var(--panel-shadow), 0 28px 52px rgba(0, 0, 0, 0.4);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+      max-width: 94vw;
+    }
+
+    .video-modal-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #1a1a1a;
+      text-align: center;
+    }
+
+    .video-modal-content iframe {
+      display: block;
+      max-width: 100%;
+    }
+
+    .video-modal-close {
+      width: auto;
+      height: auto;
+      padding: 8px 24px;
+      border: 0;
+      background: var(--chrome);
+      box-shadow: var(--panel-shadow);
+      font: 700 15px Tahoma, "MS Sans Serif", sans-serif;
+      cursor: pointer;
+    }
+
+    .video-modal-close:active {
+      box-shadow: var(--panel-inset);
+    }
+
     @media (max-width: 880px) {
       body {
         padding: 16px;
@@ -371,6 +423,16 @@
       </section>
     </div>
   </main>
+
+  <div class="video-modal" id="video-modal" hidden>
+    <div class="video-modal-content">
+      <div class="video-modal-title" id="video-modal-title"></div>
+      <iframe id="video-frame" width="315" height="560"
+        src="" frameborder="0"
+        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <button class="video-modal-close" id="video-modal-close" type="button">Another win?</button>
+    </div>
+  </div>
 
   <script src="index.js"></script>
 </body>
