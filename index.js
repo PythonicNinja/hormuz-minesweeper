@@ -555,17 +555,20 @@ function handleBoardDblClick(event) {
 
 let touchMode = "dig";
 const flagToggle = document.getElementById("flag-toggle");
+const flagFabIcon = document.getElementById("flag-fab-icon");
 const flagToggleLabel = document.getElementById("flag-toggle-label");
 
 function setTouchMode(mode) {
   touchMode = mode;
   boardElement.dataset.touchMode = mode;
+  if (flagFabIcon) {
+    flagFabIcon.innerHTML = mode === "flag" ? FLAG_ICON : MINE_ICON;
+  }
   if (flagToggle) {
-    flagToggle.innerHTML = mode === "flag" ? FLAG_ICON : MINE_ICON;
     flagToggle.classList.toggle("active", mode === "flag");
   }
   if (flagToggleLabel) {
-    flagToggleLabel.textContent = mode === "flag" ? "flag mode" : "dig mode";
+    flagToggleLabel.textContent = mode === "flag" ? "flag" : "dig";
   }
 }
 

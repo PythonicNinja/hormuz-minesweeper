@@ -301,10 +301,6 @@
       gap: 2px;
     }
 
-    .btn-wrap.mode-wrap {
-      display: none;
-    }
-
     .btn-label {
       display: none;
       font-size: 10px;
@@ -315,55 +311,64 @@
     }
 
     @media (pointer: coarse) {
-      .btn-wrap.mode-wrap {
-        display: grid;
-      }
-
       .btn-label {
         display: block;
-      }
-    }
-
-    .flag-toggle {
-      display: none;
-      width: 64px;
-      height: 64px;
-      padding: 0;
-      border: 0;
-      background: var(--chrome);
-      box-shadow: var(--panel-shadow);
-      cursor: pointer;
-    }
-
-    .flag-toggle svg {
-      width: 65%;
-      height: 65%;
-      display: block;
-      margin: auto;
-    }
-
-    .flag-toggle:active {
-      box-shadow: var(--panel-inset);
-    }
-
-    .flag-toggle.active {
-      box-shadow: var(--panel-inset);
-      background: #e8d0d0;
-    }
-
-    @media (pointer: coarse) {
-      .flag-toggle {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .hud {
-        grid-template-columns: auto 112px auto minmax(0, 1fr);
       }
 
       .status-note {
         display: none;
+      }
+    }
+
+    .flag-fab {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 0;
+      background: var(--chrome);
+      box-shadow: var(--panel-shadow), 0 4px 16px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .flag-fab-icon {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+
+    .flag-fab-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .flag-fab-label {
+      font: 700 13px Tahoma, "MS Sans Serif", sans-serif;
+      color: #111111;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .flag-fab:active {
+      box-shadow: var(--panel-inset), 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .flag-fab.active {
+      box-shadow: var(--panel-inset), 0 2px 8px rgba(0, 0, 0, 0.2);
+      background: #e8d0d0;
+    }
+
+    @media (pointer: coarse) {
+      .flag-fab {
+        display: inline-flex;
       }
     }
 
@@ -464,7 +469,6 @@
       }
 
       .hud {
-        grid-template-columns: auto 1fr auto;
         gap: 6px;
         padding: 6px;
       }
@@ -476,11 +480,6 @@
       }
 
       .reset {
-        width: 36px;
-        height: 36px;
-      }
-
-      .flag-toggle {
         width: 36px;
         height: 36px;
       }
@@ -533,19 +532,6 @@
 
     <div class="shell">
       <section class="hud" aria-label="Game status">
-        <div class="btn-wrap mode-wrap">
-          <button class="flag-toggle" id="flag-toggle" type="button" aria-label="Toggle flag mode">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <line x1="12" y1="1.8" x2="12" y2="22.2" stroke="#000000" stroke-width="1.4" />
-              <line x1="1.8" y1="12" x2="22.2" y2="12" stroke="#000000" stroke-width="1.4" />
-              <line x1="4.1" y1="4.1" x2="19.9" y2="19.9" stroke="#000000" stroke-width="1.4" />
-              <line x1="19.9" y1="4.1" x2="4.1" y2="19.9" stroke="#000000" stroke-width="1.4" />
-              <circle cx="12" cy="12" r="5.1" fill="#000000" />
-              <circle cx="10.2" cy="9.8" r="1.7" fill="#ffffff" />
-            </svg>
-          </button>
-          <span class="btn-label" id="flag-toggle-label">mode</span>
-        </div>
         <div class="counter" id="mine-counter">000</div>
         <div class="btn-wrap">
           <button class="reset" id="reset-button" type="button" aria-label="Reset game"></button>
@@ -564,6 +550,20 @@
       </section>
     </div>
   </main>
+
+  <button class="flag-fab" id="flag-toggle" type="button" aria-label="Toggle flag mode">
+    <span class="flag-fab-icon" id="flag-fab-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="12" y1="1.8" x2="12" y2="22.2" stroke="#000000" stroke-width="1.4" />
+        <line x1="1.8" y1="12" x2="22.2" y2="12" stroke="#000000" stroke-width="1.4" />
+        <line x1="4.1" y1="4.1" x2="19.9" y2="19.9" stroke="#000000" stroke-width="1.4" />
+        <line x1="19.9" y1="4.1" x2="4.1" y2="19.9" stroke="#000000" stroke-width="1.4" />
+        <circle cx="12" cy="12" r="5.1" fill="#000000" />
+        <circle cx="10.2" cy="9.8" r="1.7" fill="#ffffff" />
+      </svg>
+    </span>
+    <span class="flag-fab-label" id="flag-toggle-label">dig mode</span>
+  </button>
 
   <div class="video-modal" id="video-modal" hidden>
     <div class="video-modal-content">
