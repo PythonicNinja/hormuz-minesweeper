@@ -485,6 +485,11 @@ function render() {
 }
 
 function handleBoardClick(event) {
+  if (longPressFired) {
+    longPressFired = false;
+    return;
+  }
+
   advanceBrowserTitle();
 
   const button = event.target.closest(".cell");
@@ -573,12 +578,9 @@ boardElement.addEventListener("touchstart", (event) => {
   }, 500);
 }, { passive: true });
 
-boardElement.addEventListener("touchend", (event) => {
+boardElement.addEventListener("touchend", () => {
   clearTimeout(longPressTimer);
-  if (longPressFired) {
-    event.preventDefault();
-  }
-});
+}, { passive: true });
 
 boardElement.addEventListener("touchmove", () => {
   clearTimeout(longPressTimer);
