@@ -30,6 +30,7 @@ const MINE_RATIO = 0.15;
 const boardElement = document.getElementById("board");
 const mineCounterElement = document.getElementById("mine-counter");
 const statusElement = document.getElementById("status-text");
+const statusNoteElement = document.getElementById("status-note");
 const resetButton = document.getElementById("reset-button");
 
 const FLAG_ICON = `
@@ -235,6 +236,8 @@ function resetGame() {
   safeCellsRemaining = playableIndices.length - mineCount;
   minesSeeded = false;
   gameState = "ready";
+  touchMode = "dig";
+  boardElement.dataset.touchMode = "dig";
   setFace("idle");
 
   for (const cell of cells) {
@@ -471,7 +474,13 @@ function handleBoardClick(event) {
     return;
   }
 
-  revealCell(Number(button.dataset.index));
+  const index = Number(button.dataset.index);
+
+  if (touchMode === "flag") {
+    toggleFlag(index);
+  } else {
+    revealCell(index);
+  }
 }
 
 function handleBoardContextMenu(event) {
@@ -519,6 +528,42 @@ function handleBoardDblClick(event) {
   if (!button) return;
   chordCell(Number(button.dataset.index));
 }
+
+let touchMode = "dig";
+let longPressTimer = null;
+let longPressFired = false;
+
+function setTouchMode(mode) {
+  touchMode = mode;
+  boardElement.dataset.touchMode = mode;
+  statusNoteElement.textContent = mode === "flag"
+    ? "FLAG MODE — tap to flag. Long-press to switch back."
+    : "DIG MODE — tap to reveal. Long-press to switch to flag mode.";
+  if (navigator.vibrate) navigator.vibrate(50);
+}
+
+boardElement.addEventListener("touchstart", (event) => {
+  const button = event.target.closest(".cell");
+  if (!button) return;
+
+  longPressFired = false;
+
+  longPressTimer = setTimeout(() => {
+    longPressFired = true;
+    setTouchMode(touchMode === "dig" ? "flag" : "dig");
+  }, 500);
+}, { passive: true });
+
+boardElement.addEventListener("touchend", (event) => {
+  clearTimeout(longPressTimer);
+  if (longPressFired) {
+    event.preventDefault();
+  }
+});
+
+boardElement.addEventListener("touchmove", () => {
+  clearTimeout(longPressTimer);
+}, { passive: true });
 
 boardElement.addEventListener("click", handleBoardClick);
 boardElement.addEventListener("dblclick", handleBoardDblClick);

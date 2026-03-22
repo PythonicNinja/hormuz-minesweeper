@@ -236,6 +236,11 @@
       background: rgba(176, 176, 176, 0.96);
     }
 
+    .board[data-touch-mode="flag"] .cell.playable.hidden {
+      cursor: crosshair;
+      box-shadow: var(--panel-shadow), inset 0 0 0 1px rgba(255, 42, 42, 0.3);
+    }
+
     .cell.playable.revealed {
       background: rgba(192, 192, 192, 0.38);
       box-shadow: inset 1px 1px 0 rgba(110, 110, 110, 0.95);
@@ -355,7 +360,7 @@
         <button class="reset" id="reset-button" type="button" aria-label="Reset game"></button>
         <div class="status-panel">
           <div class="status-text" id="status-text">READY to start winning!!!</div>
-          <div class="status-note">Left-click reveal. Right-click flag. Mines only spawn on water.</div>
+          <div class="status-note" id="status-note">Left-click reveal. Right-click flag. Double-click chord. Long-press to toggle flag mode on touch. Mines only spawn on water.</div>
         </div>
       </section>
 
