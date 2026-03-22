@@ -365,6 +365,38 @@ function revealCell(index) {
   render();
 }
 
+function chordCell(index) {
+  const cell = cells[index];
+
+  if (
+    gameState === "won" ||
+    gameState === "lost" ||
+    !cell.playable ||
+    !cell.revealed ||
+    cell.adjacent === 0
+  ) {
+    return;
+  }
+
+  let flagCount = 0;
+  for (const neighborIndex of neighbors[index]) {
+    if (cells[neighborIndex].flagged) {
+      flagCount += 1;
+    }
+  }
+
+  if (flagCount !== cell.adjacent) {
+    return;
+  }
+
+  for (const neighborIndex of neighbors[index]) {
+    const neighbor = cells[neighborIndex];
+    if (!neighbor.revealed && !neighbor.flagged && neighbor.playable) {
+      revealCell(neighborIndex);
+    }
+  }
+}
+
 function toggleFlag(index) {
   const cell = cells[index];
 
@@ -482,7 +514,14 @@ function handleMouseUp() {
   }
 }
 
+function handleBoardDblClick(event) {
+  const button = event.target.closest(".cell");
+  if (!button) return;
+  chordCell(Number(button.dataset.index));
+}
+
 boardElement.addEventListener("click", handleBoardClick);
+boardElement.addEventListener("dblclick", handleBoardDblClick);
 boardElement.addEventListener("contextmenu", handleBoardContextMenu);
 boardElement.addEventListener("mousedown", handleBoardMouseDown);
 document.addEventListener("mouseup", handleMouseUp);
