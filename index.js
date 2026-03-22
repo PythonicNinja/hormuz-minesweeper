@@ -493,6 +493,12 @@ function handleBoardClick(event) {
   }
 
   const index = Number(button.dataset.index);
+  const cell = cells[index];
+
+  if (cell.revealed && cell.adjacent > 0) {
+    chordCell(index);
+    return;
+  }
 
   if (touchMode === "flag") {
     toggleFlag(index);
