@@ -299,7 +299,7 @@ function revealAllMines() {
 
 function showVideoModal(title) {
   videoModalTitle.textContent = title;
-  videoFrame.src = "https://www.youtube.com/embed/MJMSJM-h6b4?autoplay=1";
+  videoFrame.src = "https://www.youtube.com/embed/MJMSJM-h6b4?autoplay=1&playsinline=1";
   videoModal.hidden = false;
 }
 

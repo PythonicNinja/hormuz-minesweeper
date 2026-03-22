@@ -199,6 +199,8 @@
       display: grid;
       touch-action: manipulation;
       user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
     }
 
     .cell {
@@ -328,6 +330,7 @@
     .video-modal-content iframe {
       display: block;
       max-width: 100%;
+      max-height: 60vh;
     }
 
     .video-modal-close {
@@ -388,6 +391,15 @@
         width: 56px;
         height: 56px;
       }
+
+      .video-modal-content iframe {
+        width: 240px;
+        height: 427px;
+      }
+
+      .video-modal-title {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
@@ -429,7 +441,8 @@
       <div class="video-modal-title" id="video-modal-title"></div>
       <iframe id="video-frame" width="315" height="560"
         src="" frameborder="0"
-        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        allow="autoplay; encrypted-media" allowfullscreen
+        playsinline></iframe>
       <button class="video-modal-close" id="video-modal-close" type="button">Another win?</button>
     </div>
   </div>
