@@ -240,8 +240,7 @@ function resetGame() {
   safeCellsRemaining = playableIndices.length - mineCount;
   minesSeeded = false;
   gameState = "ready";
-  touchMode = "dig";
-  boardElement.dataset.touchMode = "dig";
+  setTouchMode("dig");
   setFace("idle");
 
   for (const cell of cells) {
@@ -485,11 +484,6 @@ function render() {
 }
 
 function handleBoardClick(event) {
-  if (longPressFired) {
-    longPressFired = false;
-    return;
-  }
-
   advanceBrowserTitle();
 
   const button = event.target.closest(".cell");
@@ -554,37 +548,39 @@ function handleBoardDblClick(event) {
 }
 
 let touchMode = "dig";
-let longPressTimer = null;
-let longPressFired = false;
+const flagToggle = document.getElementById("flag-toggle");
+const flagToggleLabel = document.getElementById("flag-toggle-label");
 
 function setTouchMode(mode) {
   touchMode = mode;
   boardElement.dataset.touchMode = mode;
-  statusNoteElement.textContent = mode === "flag"
-    ? "FLAG MODE — tap to flag. Long-press to switch back."
-    : "DIG MODE — tap to reveal. Long-press to switch to flag mode.";
-  if (navigator.vibrate) navigator.vibrate(50);
+  if (flagToggle) {
+    flagToggle.innerHTML = mode === "flag" ? FLAG_ICON : MINE_ICON;
+    flagToggle.classList.toggle("active", mode === "flag");
+  }
+  if (flagToggleLabel) {
+    flagToggleLabel.textContent = mode === "flag" ? "flag mode" : "dig mode";
+  }
 }
 
-boardElement.addEventListener("touchstart", (event) => {
-  const button = event.target.closest(".cell");
-  if (!button) return;
+if (flagToggle) {
+  let toggledByTouch = false;
 
-  longPressFired = false;
-
-  longPressTimer = setTimeout(() => {
-    longPressFired = true;
+  flagToggle.addEventListener("touchend", (event) => {
+    event.preventDefault();
+    toggledByTouch = true;
     setTouchMode(touchMode === "dig" ? "flag" : "dig");
-  }, 500);
-}, { passive: true });
+  });
 
-boardElement.addEventListener("touchend", () => {
-  clearTimeout(longPressTimer);
-}, { passive: true });
-
-boardElement.addEventListener("touchmove", () => {
-  clearTimeout(longPressTimer);
-}, { passive: true });
+  flagToggle.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (toggledByTouch) {
+      toggledByTouch = false;
+      return;
+    }
+    setTouchMode(touchMode === "dig" ? "flag" : "dig");
+  });
+}
 
 boardElement.addEventListener("click", handleBoardClick);
 boardElement.addEventListener("dblclick", handleBoardDblClick);

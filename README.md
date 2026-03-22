@@ -8,11 +8,10 @@ Classic Minesweeper laid across the Strait of Hormuz. Clear the water, flag the 
 
 ## How to play
 
-| Action | Mouse | Touch (iPad) |
+| Action | Mouse | Touch (iPad/iPhone) |
 |---|---|---|
-| Reveal a cell | Left-click | Tap (dig mode) |
-| Flag / unflag a mine | Right-click | Tap (flag mode) |
-| Switch dig/flag mode | — | Long-press |
+| Reveal a cell | Left-click | Tap |
+| Flag / unflag a mine | Right-click | Toggle "Flag" button, then tap |
 | Chord (auto-reveal neighbors) | Double-click a number | Double-tap a number |
 
 Mines only spawn on water. Your first click is always safe.
